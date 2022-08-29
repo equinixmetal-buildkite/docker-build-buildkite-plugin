@@ -305,3 +305,61 @@ export BUILDKITE_COMMIT="12345"
   unstub which
   unstub buildkite-agent
 }
+
+@test "pushes an image with basic parameters set" {
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_PUSH=true
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0="foo/bar:baz"
+
+  stub which 'docker : echo /usr/bin/docker'
+  stub buildkite-agent 'annotate --style success "Docker build succeeded<br />" --context publish --append : echo pushed buildkite agent message' \
+    "annotate --style success 'Docker push succeeded for tag foo/bar:baz<br />' --context publish --append : echo pushed buildkite agent message for push"
+  stub docker 'build --tag foo/bar:baz -f Dockerfile . : echo basic parameters set' \
+    'push foo/bar:baz : echo pushed image'
+
+  run "$PWD/hooks/post-command"
+
+  assert_success
+  assert_output --partial "basic parameters set"
+  assert_output --partial "Docker build succeeded"
+  assert_output --partial "pushed buildkite agent message"
+  assert_output --partial "pushed image"
+  assert_output --partial "pushed buildkite agent message for push"
+
+  unstub which
+  unstub buildkite-agent
+  unstub docker
+}
+
+@test "pushes an image with multiple tags set" {
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_PUSH=true
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0="foo/bar:baz1"
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_1="foo/bar:baz2"
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_2="foo/bar:baz3"
+
+  stub which 'docker : echo /usr/bin/docker'
+  stub buildkite-agent 'annotate --style success "Docker build succeeded<br />" --context publish --append : echo pushed buildkite agent message' \
+    "annotate --style success 'Docker push succeeded for tag foo/bar:baz1<br />' --context publish --append : echo pushed buildkite agent message for push 1" \
+    "annotate --style success 'Docker push succeeded for tag foo/bar:baz2<br />' --context publish --append : echo pushed buildkite agent message for push 2" \
+    "annotate --style success 'Docker push succeeded for tag foo/bar:baz3<br />' --context publish --append : echo pushed buildkite agent message for push 3"
+  stub docker "build --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0 --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_1 --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_2 -f Dockerfile . : echo basic parameters set" \
+    'push foo/bar:baz1 : echo pushed image 1' \
+    'push foo/bar:baz2 : echo pushed image 2' \
+    'push foo/bar:baz3 : echo pushed image 3'
+
+  run "$PWD/hooks/post-command"
+
+  assert_success
+  assert_output --partial "basic parameters set"
+  assert_output --partial "Docker build succeeded"
+  assert_output --partial "pushed buildkite agent message"
+  assert_output --partial "pushed image 1"
+  assert_output --partial "pushed image 2"
+  assert_output --partial "pushed image 3"
+  assert_output --partial "pushed buildkite agent message for push 1"
+  assert_output --partial "pushed buildkite agent message for push 2"
+  assert_output --partial "pushed buildkite agent message for push 3"
+
+  unstub which
+  unstub buildkite-agent
+  unstub docker
+}

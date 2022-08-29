@@ -81,6 +81,7 @@ which docker >/dev/null || {
 
 dockerfile=${BUILDKITE_PLUGIN_DOCKER_BUILD_DOCKERFILE:-Dockerfile}
 context=${BUILDKITE_PLUGIN_DOCKER_BUILD_CONTEXT:-.}
+push=${BUILDKITE_PLUGIN_DOCKER_BUILD_PUSH:-false}
 tagsflags=()
 
 if docker_metadata_file_exists tags ; then
@@ -145,4 +146,22 @@ if [[ $status -eq 0 ]] ; then
   display_success "Docker build succeeded"
 else
   fail_with_message "Docker build failed"
+fi
+
+# Push
+######
+
+if [[ "${push}" == "true" ]] ; then
+  for tag in "${tagsflags[@]}" ; do
+    if [[ "${tag}" == "--tag" ]] ; then
+      continue
+    fi
+    docker push "${tag}"
+    status=$?
+    if [[ $status -eq 0 ]] ; then
+      display_success "Docker push succeeded for tag ${tag}"
+    else
+      fail_with_message "Docker push failed for tag ${tag}"
+    fi
+  done
 fi
