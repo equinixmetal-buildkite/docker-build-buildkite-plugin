@@ -1,0 +1,23 @@
+---
+name: Docker Build
+description: Builds a container image
+author: https://github.com/equinixmetal-buildkite
+requirements:
+  - docker
+configuration:
+  properties:
+    dockerfile:
+      type: string
+      description: The path to the Dockerfile.
+      default: Dockerfile
+    context:
+      type: string
+      description: The path to the context directory.
+      default: .
+    tags:
+      type: array
+      description: A list of tags to build (can also detect tags from docker-metadata-buildkite-plugin)
+    labels:
+      type: array
+      description: A list of labels to build (can also detect tags from docker-metadata-buildkite-plugin)
+  additionalProperties: false
