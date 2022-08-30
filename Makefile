@@ -1,6 +1,6 @@
 .PHONY: lint
 lint: | plugin-arg-docs
-	docker run --rm -v "$$PWD:/plugin:ro" buildkite/plugin-linter --id equinixmetal-buildkite/docker-metadata
+	docker run --rm -v "$$PWD:/plugin:ro" buildkite/plugin-linter --id equinixmetal-buildkite/docker-build
 
 .PHONY: test
 test:
