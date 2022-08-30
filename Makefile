@@ -1,10 +1,10 @@
 .PHONY: lint
 lint: | plugin-arg-docs
-	docker run -it --rm -v "$$PWD:/plugin:ro" buildkite/plugin-linter --id equinixmetal-buildkite/docker-metadata
+	docker run --rm -v "$$PWD:/plugin:ro" buildkite/plugin-linter --id equinixmetal-buildkite/docker-metadata
 
 .PHONY: test
 test:
-	docker run -it --rm -v "$$PWD:/plugin:ro" buildkite/plugin-tester
+	docker run --rm -v "$$PWD:/plugin:ro" buildkite/plugin-tester
 
 .PHONY: plugin-arg-docs
 plugin-arg-docs: ## Ensures that the plugin arguments are documented
