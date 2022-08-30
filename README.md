@@ -10,7 +10,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - command: ls
     plugins:
-      - equinixmetal-buildkite/docker-build#v0.1.0:
+      - equinixmetal-buildkite/docker-build#v0.1.1:
           tags:
           - 'my-org/my-image:latest'
 ```
@@ -23,12 +23,12 @@ The following example will shows how this plugin can be integrated with the `doc
 steps:
   - command: ls
     plugins:
-      - equinixmetal-buildkite/docker-metadata#v0.1.0:
+      - equinixmetal-buildkite/docker-metadata#v0.1.2:
           images:
           - 'my-org/my-image'
           extra_tags:
           - latest
-      - equinixmetal-buildkite/docker-build#v0.1.0: {}
+      - equinixmetal-buildkite/docker-build#v0.1.1: {}
 ```
 
 This will build a container in a similar fashion as the example above. Except that
