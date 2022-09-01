@@ -82,6 +82,8 @@ which docker >/dev/null || {
 dockerfile=${BUILDKITE_PLUGIN_DOCKER_BUILD_DOCKERFILE:-Dockerfile}
 context=${BUILDKITE_PLUGIN_DOCKER_BUILD_CONTEXT:-.}
 push=${BUILDKITE_PLUGIN_DOCKER_BUILD_PUSH:-false}
+secret_file=${BUILDKITE_PLUGIN_DOCKER_BUILD_SECRET_FILE:-}
+
 tagsflags=()
 
 if docker_metadata_file_exists tags ; then
@@ -121,6 +123,10 @@ if plugin_read_list_into_result BUILDKITE_PLUGIN_DOCKER_BUILD_LABELS ; then
   unset result
 fi
 
+if [[ -n "$secret_file" ]]; then
+   export DOCKER_BUILDKIT=1
+fi
+
 # Build
 #######
 
@@ -134,14 +140,19 @@ if [ ${#labelsflags[@]} -gt 0 ]; then
   cmdargs+=("${labelsflags[@]}")
 fi
 
+if [[ -n "$secret_file" ]]; then
+  cmdargs+=("--secret" "${secret_file}")
+fi
+
 cmdargs+=(
   "-f"
   "${dockerfile}"
   "${context}"
 )
+set -x
 docker "${cmdargs[@]}"
 status=$?
-
+set +x
 if [[ $status -eq 0 ]] ; then
   display_success "Docker build succeeded"
 else
