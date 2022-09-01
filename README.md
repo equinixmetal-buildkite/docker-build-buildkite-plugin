@@ -28,7 +28,7 @@ steps:
           - 'my-org/my-image'
           extra_tags:
           - latest
-      - equinixmetal-buildkite/docker-build#v0.1.1: {}
+      - equinixmetal-buildkite/docker-build#v0.2.0: {}
 ```
 
 This will build a container in a similar fashion as the example above. Except that
