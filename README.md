@@ -28,7 +28,7 @@ steps:
           - 'my-org/my-image'
           extra_tags:
           - latest
-      - equinixmetal-buildkite/docker-build#v0.1.1: {}
+      - equinixmetal-buildkite/docker-build#v0.2.0: {}
 ```
 
 This will build a container in a similar fashion as the example above. Except that
@@ -44,6 +44,10 @@ Path to the Dockerfile to use. If not specified, the plugin will look for a `Doc
 ### `context` (Optional, string)
 
 Path to the context directory to use. If not specified, the plugin will use the `.` directory as the context path.
+
+### `secret-file` (Optional, string)
+
+A string like 'id=mysecret,src=secret-file' where <secret-file> is the path in the build (This enables [Docker Buildkit](https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information), also)
 
 ### `tags` (Optional, array of strings)
 

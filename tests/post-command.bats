@@ -363,3 +363,30 @@ export BUILDKITE_COMMIT="12345"
   unstub buildkite-agent
   unstub docker
 }
+
+@test "build with secret" {
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_PUSH=true
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0="foo/bar:baz1"
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_SECRET_FILE="id=mysecret,src=secret-file"
+
+
+  stub which 'docker : echo /usr/bin/docker'
+  stub buildkite-agent 'annotate --style success "Docker build succeeded<br />" --context publish --append : echo pushed buildkite agent message' \
+    "annotate --style success 'Docker push succeeded for tag foo/bar:baz1<br />' --context publish --append : echo pushed buildkite agent message for push 1"
+  stub docker "build --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0 --secret $BUILDKITE_PLUGIN_DOCKER_BUILD_SECRET_FILE -f Dockerfile . : echo basic parameters set" \
+    'push foo/bar:baz1 : echo pushed image 1'
+
+  run "$PWD/hooks/post-command"
+
+  assert_success
+  assert_output --partial "basic parameters set"
+  assert_output --partial "Docker build succeeded"
+  assert_output --partial "pushed buildkite agent message"
+  assert_output --partial "pushed image 1"
+  assert_output --partial "pushed buildkite agent message for push 1"
+
+
+  unstub which
+  unstub buildkite-agent
+  unstub docker
+}
