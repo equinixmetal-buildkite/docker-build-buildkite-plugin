@@ -10,7 +10,7 @@ Add the following to your `pipeline.yml`:
 steps:
   - command: ls
     plugins:
-      - equinixmetal-buildkite/docker-build#v0.1.1:
+      - equinixmetal-buildkite/docker-build#v0.2.0:
           tags:
           - 'my-org/my-image:latest'
 ```
