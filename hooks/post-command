@@ -52,9 +52,9 @@ docker_metadata_list_into_result() {
 
     result=()
 
-    for line in $(cat "$filepath") ; do
+    while read -r line ; do
       result+=("$line")
-    done
+    done < "$filepath"
 }
 
 docker_metadata_file_exists() {
