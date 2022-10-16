@@ -170,9 +170,9 @@ if [[ "${push}" == "true" ]] ; then
     docker push "${tag}"
     status=$?
     if [[ $status -eq 0 ]] ; then
-      display_success "Docker push succeeded for tag ${tag}"
+      display_success "Docker push succeeded for tag \`${tag}\`"
     else
-      fail_with_message "Docker push failed for tag ${tag}"
+      fail_with_message "Docker push failed for tag \`${tag}\`"
     fi
   done
 fi

@@ -116,7 +116,7 @@ export BUILDKITE_COMMIT="12345"
 
   stub which 'docker : echo /usr/bin/docker'
   stub buildkite-agent 'annotate --style success "Docker build succeeded<br />" --context publish --append : echo pushed buildkite agent message'
-  stub docker "build --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0 -f Dockerfile $BUILDKITE_PLUGIN_DOCKER_BUILD_DOCKERFILE : echo basic parameters set"
+  stub docker "build --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0 -f Dockerfile $BUILDKITE_PLUGIN_DOCKER_BUILD_CONTEXT : echo basic parameters set"
 
   run "$PWD/hooks/post-command"
 
@@ -312,7 +312,7 @@ export BUILDKITE_COMMIT="12345"
 
   stub which 'docker : echo /usr/bin/docker'
   stub buildkite-agent 'annotate --style success "Docker build succeeded<br />" --context publish --append : echo pushed buildkite agent message' \
-    "annotate --style success 'Docker push succeeded for tag foo/bar:baz<br />' --context publish --append : echo pushed buildkite agent message for push"
+    "annotate --style success 'Docker push succeeded for tag \`foo/bar:baz\`<br />' --context publish --append : echo pushed buildkite agent message for push"
   stub docker 'build --tag foo/bar:baz -f Dockerfile . : echo basic parameters set' \
     'push foo/bar:baz : echo pushed image'
 
@@ -338,9 +338,9 @@ export BUILDKITE_COMMIT="12345"
 
   stub which 'docker : echo /usr/bin/docker'
   stub buildkite-agent 'annotate --style success "Docker build succeeded<br />" --context publish --append : echo pushed buildkite agent message' \
-    "annotate --style success 'Docker push succeeded for tag foo/bar:baz1<br />' --context publish --append : echo pushed buildkite agent message for push 1" \
-    "annotate --style success 'Docker push succeeded for tag foo/bar:baz2<br />' --context publish --append : echo pushed buildkite agent message for push 2" \
-    "annotate --style success 'Docker push succeeded for tag foo/bar:baz3<br />' --context publish --append : echo pushed buildkite agent message for push 3"
+    "annotate --style success 'Docker push succeeded for tag \`foo/bar:baz1\`<br />' --context publish --append : echo pushed buildkite agent message for push 1" \
+    "annotate --style success 'Docker push succeeded for tag \`foo/bar:baz2\`<br />' --context publish --append : echo pushed buildkite agent message for push 2" \
+    "annotate --style success 'Docker push succeeded for tag \`foo/bar:baz3\`<br />' --context publish --append : echo pushed buildkite agent message for push 3"
   stub docker "build --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0 --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_1 --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_2 -f Dockerfile . : echo basic parameters set" \
     'push foo/bar:baz1 : echo pushed image 1' \
     'push foo/bar:baz2 : echo pushed image 2' \
@@ -372,7 +372,7 @@ export BUILDKITE_COMMIT="12345"
 
   stub which 'docker : echo /usr/bin/docker'
   stub buildkite-agent 'annotate --style success "Docker build succeeded<br />" --context publish --append : echo pushed buildkite agent message' \
-    "annotate --style success 'Docker push succeeded for tag foo/bar:baz1<br />' --context publish --append : echo pushed buildkite agent message for push 1"
+    "annotate --style success 'Docker push succeeded for tag \`foo/bar:baz1\`<br />' --context publish --append : echo pushed buildkite agent message for push 1"
   stub docker "build --tag $BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0 --secret $BUILDKITE_PLUGIN_DOCKER_BUILD_SECRET_FILE -f Dockerfile . : echo basic parameters set" \
     'push foo/bar:baz1 : echo pushed image 1'
 
