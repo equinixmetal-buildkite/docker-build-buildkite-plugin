@@ -72,9 +72,9 @@ docker_metadata_file_exists() {
 ######################
 
 # TODO(jaosorior): Also attempt using podman
-which docker >/dev/null || {
+if ! which docker >/dev/null ; then
   fail_with_message "Docker is not installed. Please install it first."
-}
+fi
 
 # Parameters
 ############

@@ -6,7 +6,8 @@ export BUILDKITE_REPO="test-org/test-repo"
 export BUILDKITE_COMMIT="12345"
 
 # Uncomment the following line to debug stub failures
-# export BUILDKITE_AGENT_STUB_DEBUG=/dev/tty
+export BUILDKITE_AGENT_STUB_DEBUG=/dev/tty
+export WHICH_STUB_DEBUG=/dev/tty
 
 @test "builds an image with basic parameters set" {
   export BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0="foo/bar:baz"
@@ -279,13 +280,12 @@ export BUILDKITE_COMMIT="12345"
 }
 
 @test "no docker in environment" {
-  stub which 'docker : return 1'
+  stub which 'docker : exit 1'
   stub buildkite-agent 'annotate --style error "Docker is not installed. Please install it first.<br />" --context publish --append : echo pushed buildkite agent message'
 
   run "$PWD/hooks/post-command"
 
   assert_failure
-  assert_output --partial "Docker is not installed"
   assert_output --partial "pushed buildkite agent message"
 
   unstub which

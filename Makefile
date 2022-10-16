@@ -1,4 +1,4 @@
-BUILDKITE_TESTER_IMAGE=buildkite/plugin-tester:v2.0.0
+BUILDKITE_TESTER_IMAGE=buildkite/plugin-tester:v3.0.1
 
 # NOTE(jaosorior): This hasn't been released in two years...
 #                  we should ask for a fix.
@@ -10,7 +10,7 @@ lint: | plugin-arg-docs
 
 .PHONY: test
 test:
-	docker run --rm -v "$$PWD:/plugin:ro" $(BUILDKITE_TESTER_IMAGE)
+	docker run -t --rm -v "$$PWD:/plugin:ro" $(BUILDKITE_TESTER_IMAGE)
 
 .PHONY: plugin-arg-docs
 plugin-arg-docs: ## Ensures that the plugin arguments are documented
