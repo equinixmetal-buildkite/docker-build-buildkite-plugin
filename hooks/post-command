@@ -123,6 +123,15 @@ if plugin_read_list_into_result BUILDKITE_PLUGIN_DOCKER_BUILD_LABELS ; then
   unset result
 fi
 
+buildargs=()
+if plugin_read_list_into_result BUILDKITE_PLUGIN_DOCKER_BUILD_BUILD_ARGS ; then
+  for arg in "${result[@]}" ; do
+    buildargs+=("--build-arg" "${arg}")
+  done
+  unset result
+fi
+
+
 if [[ -n "$secret_file" ]]; then
    export DOCKER_BUILDKIT=1
 fi
@@ -138,6 +147,11 @@ cmdargs=(
 # Labels are optional
 if [ ${#labelsflags[@]} -gt 0 ]; then
   cmdargs+=("${labelsflags[@]}")
+fi
+
+# Build args are optional
+if [ ${#buildargs[@]} -gt 0 ]; then
+  cmdargs+=("${buildargs[@]}")
 fi
 
 if [[ -n "$secret_file" ]]; then
