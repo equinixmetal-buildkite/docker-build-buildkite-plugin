@@ -364,6 +364,27 @@ export WHICH_STUB_DEBUG=/dev/tty
   unstub docker
 }
 
+@test "builds image with multiple build arguments set" {
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0="foo/bar:baz"
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_BUILD_ARGS_0="foo=bar"
+  export BUILDKITE_PLUGIN_DOCKER_BUILD_BUILD_ARGS_1="baz=qux"
+
+  stub which 'docker : echo /usr/bin/docker'
+  stub buildkite-agent 'annotate --style success "Docker build succeeded<br />" --context publish --append : echo pushed buildkite agent message'
+  stub docker 'build --tag foo/bar:baz --build-arg foo=bar --build-arg baz=qux -f Dockerfile . : echo basic parameters set'
+
+  run "$PWD/hooks/post-command"
+
+  assert_success
+  assert_output --partial "basic parameters set"
+  assert_output --partial "Docker build succeeded"
+  assert_output --partial "pushed buildkite agent message"
+
+  unstub which
+  unstub buildkite-agent
+  unstub docker
+}
+
 @test "build with secret" {
   export BUILDKITE_PLUGIN_DOCKER_BUILD_PUSH=true
   export BUILDKITE_PLUGIN_DOCKER_BUILD_TAGS_0="foo/bar:baz1"
